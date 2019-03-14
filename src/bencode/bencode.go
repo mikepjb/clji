@@ -14,6 +14,8 @@ func Encode(msg map[string]string) string {
 // decoder should work in a streaming fashion.
 // one byte at a time.
 
-type Decoder struct {
-	raw []byte
+func Decode(emsg string) map[string]interface{} {
+	var result map[string]interface{}
+
+	return result
 }

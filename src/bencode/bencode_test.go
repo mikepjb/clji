@@ -1,6 +1,8 @@
 package bencode_test
 
 import (
+	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/mikepjb/clji/src/bencode"
@@ -14,4 +16,18 @@ func TestEncode(t *testing.T) {
 	}
 }
 
-// d11:new-session36:7db0cecd-6f2a-4b57-a29b-c01c18eb7c897:session36:9340a182-e4b5-4bda-a0a9-74671af021486:statusl4:doneee
+func TestDecode(t *testing.T) {
+	emsg := "d11:new-session36:7db0cecd-6f2a-4b57-a29b-c01c18eb7c897:session36:9340a182-e4b5-4bda-a0a9-74671af021486:statusl4:doneee"
+
+	msg := map[string]interface{}{
+		"new-session": "7db0cecd-6f2a-4b57-a29b-c01c18eb7c897",
+		"session":     "9340a182-e4b5-4bda-a0a9-74671af021486",
+		"status":      []string{"done"},
+	}
+
+	fmt.Println(msg)
+
+	if reflect.DeepEqual(bencode.Decode(emsg), msg) {
+		t.Errorf("incorrect decoding, got: %v\n", bencode.Decode(emsg))
+	}
+}
