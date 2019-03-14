@@ -10,3 +10,10 @@ func Encode(msg map[string]string) string {
 	result += "e"
 	return result
 }
+
+// decoder should work in a streaming fashion.
+// one byte at a time.
+
+type Decoder struct {
+	raw []byte
+}
