@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"os"
 
@@ -10,6 +12,15 @@ import (
 
 func main() {
 	port := "9999"
+
+	fileb, err := ioutil.ReadFile(".nrepl-port")
+
+	if err != nil {
+		fmt.Println(".nrepl-port not found")
+	} else {
+		fmt.Printf("setting port to %v\n", string(fileb))
+		port = string(fileb)
+	}
 
 	if len(os.Args) != 1 {
 		port = os.Args[1]
@@ -22,6 +33,11 @@ func main() {
 	conn, _ := net.Dial("tcp", "127.0.0.1:"+port)
 	fmt.Fprintf(conn, emsg+"\n")
 
-	// b, _ := bufio.NewReader(conn).ReadLine()
-	// fmt.Print("response: " + string(b))
+	r := bufio.NewReader(conn)
+	var b []byte = make([]byte, 1)
+
+	for {
+		r.Read(b)
+		fmt.Printf("%v", string(b))
+	}
 }
