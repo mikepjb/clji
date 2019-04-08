@@ -30,7 +30,12 @@ func main() {
 	emsg := bencode.Encode(clone)
 	fmt.Println(emsg)
 
-	conn, _ := net.Dial("tcp", "127.0.0.1:"+port)
+	conn, err := net.Dial("tcp", "127.0.0.1:"+port)
+
+	if err != nil {
+		fmt.Errorf("could not connect: %v\n", err)
+	}
+
 	fmt.Fprintf(conn, emsg+"\n")
 
 	r := bufio.NewReader(conn)

@@ -1,6 +1,10 @@
 package bencode
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
 func Encode(msg map[string]string) string {
 	result := "d"
@@ -15,7 +19,55 @@ func Encode(msg map[string]string) string {
 // one byte at a time.
 
 func Decode(emsg string) map[string]interface{} {
-	var result map[string]interface{}
+	result := map[string]interface{}{}
+
+	ptr := 0
+
+	if emsg[ptr] == 'd' { // we are decoding a dictionary
+		ptr++
+		key := "" // current key being decoded
+		inList := false
+		list := []string{}
+
+		for ptr <= len(emsg) {
+			nextRune := emsg[ptr : ptr+1]
+
+			if nextRune == "l" {
+				inList = true
+				ptr++
+			} else if nextRune == "e" {
+				if inList {
+					inList = false
+					result[key] = list
+					ptr++
+				} else {
+					break
+				}
+			} else {
+				cpos := strings.Index(emsg[ptr:], ":") + ptr
+				length, err := strconv.Atoi(emsg[ptr:cpos])
+
+				if err != nil {
+					fmt.Errorf("problem converting %v to int\n", err)
+				}
+
+				ptr = cpos + 1
+
+				if len(key) == 0 { // decoding key
+					key = emsg[ptr : ptr+length]
+				} else { // decoding value
+					if inList {
+						list = append(list, emsg[ptr:ptr+length])
+					} else {
+						result[key] = emsg[ptr : ptr+length+1]
+						key = ""
+					}
+				}
+
+				ptr += length
+			}
+		}
+	}
 
 	return result
 }

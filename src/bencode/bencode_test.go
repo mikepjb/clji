@@ -1,7 +1,6 @@
 package bencode_test
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -25,9 +24,7 @@ func TestDecode(t *testing.T) {
 		"status":      []string{"done"},
 	}
 
-	fmt.Println(msg)
-
-	if reflect.DeepEqual(bencode.Decode(emsg), msg) {
+	if !reflect.DeepEqual(bencode.Decode(emsg), msg) {
 		t.Errorf("incorrect decoding, got: %v\n", bencode.Decode(emsg))
 	}
 }
