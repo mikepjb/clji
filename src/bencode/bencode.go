@@ -23,13 +23,18 @@ func Decode(emsg string) (map[string]interface{}, bool) {
 
 	ptr := 0
 
+	// hack because I'm tired
+	if emsg == "d" {
+		return nil, false
+	}
+
 	if emsg[ptr] == 'd' { // we are decoding a dictionary
 		ptr++
 		key := "" // current key being decoded
 		inList := false
 		list := []string{}
 
-		for ptr <= len(emsg) {
+		for ptr < len(emsg) {
 			nextRune := emsg[ptr : ptr+1]
 
 			if nextRune == "l" {
@@ -61,6 +66,10 @@ func Decode(emsg string) (map[string]interface{}, bool) {
 				}
 
 				ptr = cpos + 1
+
+				if ptr+length > len(emsg) { // incomplete key
+					return nil, false
+				}
 
 				if len(key) == 0 { // decoding key
 					key = emsg[ptr : ptr+length]

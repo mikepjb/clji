@@ -41,8 +41,17 @@ func main() {
 	r := bufio.NewReader(conn)
 	var b []byte = make([]byte, 1)
 
+	response := ""
+
 	for {
 		r.Read(b)
-		fmt.Printf("%v", string(b))
+		response += string(b)
+		fmt.Println(response)
+		msg, ok := bencode.Decode(response)
+
+		if ok {
+			fmt.Println(msg)
+			break
+		}
 	}
 }
