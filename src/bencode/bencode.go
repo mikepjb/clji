@@ -18,7 +18,7 @@ func Encode(msg map[string]string) string {
 // decoder should work in a streaming fashion.
 // one byte at a time.
 
-func Decode(emsg string) map[string]interface{} {
+func Decode(emsg string) (map[string]interface{}, bool) {
 	result := map[string]interface{}{}
 
 	ptr := 0
@@ -45,7 +45,16 @@ func Decode(emsg string) map[string]interface{} {
 				}
 			} else {
 				cpos := strings.Index(emsg[ptr:], ":") + ptr
+
+				if ptr > cpos { // incomplete msg
+					return nil, false
+				}
+
 				length, err := strconv.Atoi(emsg[ptr:cpos])
+
+				if ptr+length > len(emsg) { // length exceeds remaining message
+					return nil, false
+				}
 
 				if err != nil {
 					fmt.Errorf("problem converting %v to int\n", err)
@@ -69,5 +78,5 @@ func Decode(emsg string) map[string]interface{} {
 		}
 	}
 
-	return result
+	return result, true
 }

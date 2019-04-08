@@ -24,7 +24,31 @@ func TestDecode(t *testing.T) {
 		"status":      []string{"done"},
 	}
 
-	if !reflect.DeepEqual(bencode.Decode(emsg), msg) {
-		t.Errorf("incorrect decoding, got: %v\n", bencode.Decode(emsg))
+	dmsg, ok := bencode.Decode(emsg)
+
+	if ok && !reflect.DeepEqual(dmsg, msg) {
+		t.Errorf("incorrect decoding, got: %v\n", dmsg)
+	}
+}
+
+// because we are reading bencoded info in a stream we'd like to know if we have
+// a complete data structure.
+func TestFlagIncompleteBencode(t *testing.T) {
+	// with complete value
+	partialWithCompleteValue := "d11:new-session36:7db0cecd-6f2a-4b57-a29b-c01c18eb7c897"
+
+	_, ok := bencode.Decode(partialWithCompleteValue)
+
+	if ok {
+		t.Errorf("message should not be complete for partialWithCompleteValue")
+	}
+
+	// with incomplete value (asking for it would exceed the range of the string)
+	partialWithIncompleteValue := "d11:new-session36:7db0cecd-6f2a-4b57-a29b-c01c1"
+
+	_, ok = bencode.Decode(partialWithIncompleteValue)
+
+	if ok {
+		t.Errorf("message should not be complete for partialWithIncompleteValue")
 	}
 }
