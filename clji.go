@@ -68,7 +68,6 @@ func send(code string) string {
 
 				if ok {
 					response = ""
-
 					v, ok := msg["status"].([]string)
 
 					if ok {
@@ -82,6 +81,12 @@ func send(code string) string {
 
 					if ok {
 						value = val
+					}
+
+					errMsg, ok := msg["err"].(string)
+
+					if ok {
+						value = errMsg
 					}
 				}
 			}
