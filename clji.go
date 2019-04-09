@@ -105,5 +105,5 @@ func main() {
 		input = os.Args[1]
 	}
 
-	fmt.Println(send(input))
+	fmt.Printf("%v", send(input))
 }
