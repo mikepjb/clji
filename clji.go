@@ -10,15 +10,17 @@ import (
 	"github.com/mikepjb/clji/src/bencode"
 )
 
-func send(code string) {
+func send(code string) string {
 	port := "9999"
 
 	fileb, err := ioutil.ReadFile(".nrepl-port")
 
 	if err != nil {
-		fmt.Println(".nrepl-port not found")
+		fileb, err = ioutil.ReadFile("~/.lein/repl-port")
+		if err == nil {
+			port = string(fileb)
+		}
 	} else {
-		fmt.Printf("setting port to %v\n", string(fileb))
 		port = string(fileb)
 	}
 
@@ -41,6 +43,7 @@ func send(code string) {
 	var b []byte = make([]byte, 1)
 
 	response := ""
+	value := ""
 
 	for {
 		r.Read(b)
@@ -48,9 +51,8 @@ func send(code string) {
 		msg, ok := bencode.Decode(response)
 
 		if ok {
-			fmt.Println(response)
 			response := ""
-			fmt.Println(msg)
+			newSession := msg["new-session"].(string)
 
 			defMsg := map[string]string{
 				"session": msg["new-session"].(string),
@@ -69,16 +71,34 @@ func send(code string) {
 				msg, ok = bencode.Decode(response)
 
 				if ok {
-					break
+					fmt.Println(msg)
+					response = ""
+
+					v, ok := msg["status"].([]string)
+
+					if ok {
+						if msg["session"].(string) == newSession &&
+							v[0] == "done" {
+							break
+						}
+					}
+
+					val, ok := msg["value"].(string)
+
+					if ok {
+						value = val
+					}
 				}
 			}
 
 			break
 		}
 	}
+
+	return value
 }
 
 func main() {
 	// send("(def variable \"like this\")")
-	send("(+ 40 2)")
+	fmt.Println(send("(println (+ 40 2))"))
 }
