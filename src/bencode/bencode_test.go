@@ -19,8 +19,8 @@ func TestDecode(t *testing.T) {
 	emsg := "d11:new-session36:7db0cecd-6f2a-4b57-a29b-c01c18eb7c897:session36:9340a182-e4b5-4bda-a0a9-74671af021486:statusl4:doneee"
 
 	msg := map[string]interface{}{
-		"new-session": "7db0cecd-6f2a-4b57-a29b-c01c18eb7c897",
-		"session":     "9340a182-e4b5-4bda-a0a9-74671af021486",
+		"new-session": "7db0cecd-6f2a-4b57-a29b-c01c18eb7c89",
+		"session":     "9340a182-e4b5-4bda-a0a9-74671af02148",
 		"status":      []string{"done"},
 	}
 
@@ -48,7 +48,7 @@ func TestFlagIncompleteBencode(t *testing.T) {
 	}
 
 	// with complete value
-	partialWithCompleteValue := "d11:new-session36:7db0cecd-6f2a-4b57-a29b-c01c18eb7c897"
+	partialWithCompleteValue := "d11:new-session36:7db0cecd-6f2a-4b57-a29b-c01c18eb7c89"
 
 	_, ok = bencode.Decode(partialWithCompleteValue)
 

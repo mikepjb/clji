@@ -28,7 +28,6 @@ func main() {
 
 	clone := map[string]string{"op": "clone"}
 	emsg := bencode.Encode(clone)
-	fmt.Println(emsg)
 
 	conn, err := net.Dial("tcp", "127.0.0.1:"+port)
 
@@ -36,7 +35,7 @@ func main() {
 		fmt.Errorf("could not connect: %v\n", err)
 	}
 
-	fmt.Fprintf(conn, emsg+"\n")
+	fmt.Fprintf(conn, emsg)
 
 	r := bufio.NewReader(conn)
 	var b []byte = make([]byte, 1)
@@ -49,36 +48,35 @@ func main() {
 		msg, ok := bencode.Decode(response)
 
 		if ok {
+			fmt.Println(response)
 			response := ""
 			fmt.Println(msg)
-			fmt.Println(msg["new-session"])
 
 			defMsg := map[string]string{
 				"session": msg["new-session"].(string),
+				"op":      "eval",
 				"ns":      "user",
-				"eval":    "(def a 13)",
+				"code":    "(def a 13)",
 			}
 
+			fmt.Println(defMsg)
 			emsg := bencode.Encode(defMsg)
+			fmt.Println(emsg)
 
-			fmt.Fprintf(conn, emsg+"\n")
+			fmt.Fprintf(conn, emsg)
+			// r = bufio.NewReader(conn)
 
 			for {
 				r.Read(b)
 				response += string(b)
 
-				if len(response) > 50 {
+				msg, ok = bencode.Decode(response)
+
+				if ok {
+					fmt.Println("re:", response)
+					fmt.Println("ok:", msg)
 					break
 				}
-
-				fmt.Println(string(b))
-				fmt.Println(response)
-				_, _ = bencode.Decode(response)
-
-				// if ok {
-				// 	fmt.Println(msg)
-				// 	break
-				// }
 			}
 
 			break

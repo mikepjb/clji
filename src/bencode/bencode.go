@@ -72,7 +72,7 @@ func Decode(emsg string) (map[string]interface{}, bool) {
 				if inList {
 					list = append(list, emsg[ptr:ptr+length])
 				} else {
-					result[key] = emsg[ptr : ptr+length+1]
+					result[key] = emsg[ptr : ptr+length]
 					key = ""
 				}
 			}
