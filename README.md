@@ -15,6 +15,16 @@ endfunc
 command! Require :call Require()
 ```
 
+```
+command! -nargs=? -range Eval <line1>,<line2>call Eval('<args>')
+vnoremap <CR> :Eval<CR>
+function! Eval(regex) range
+  let section = getline(a:firstline, a:lastline)
+  let call = system("clji \"" . join(section) . "\"")
+  echo call
+endfunction
+```
+
 ## Notes on nREPL
 
 if no project.clj is found, it creates a ~/.lein/nrepl-port file
