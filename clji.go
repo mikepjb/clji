@@ -99,6 +99,13 @@ func send(code string) string {
 }
 
 func main() {
+	input := "(+ 40 2)"
+
+	// if len(os.Args) > 1 {
+	// fmt.Println(os.Args[1])
+	// input = os.Args[1]
+	// }
+
 	// send("(def variable \"like this\")")
-	fmt.Println(send("(println (+ 40 2))"))
+	fmt.Println(send(input))
 }
