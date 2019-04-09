@@ -24,10 +24,6 @@ func send(code string) string {
 		port = string(fileb)
 	}
 
-	if len(os.Args) != 1 {
-		port = os.Args[1]
-	}
-
 	clone := map[string]string{"op": "clone"}
 	emsg := bencode.Encode(clone)
 
@@ -71,7 +67,6 @@ func send(code string) string {
 				msg, ok = bencode.Decode(response)
 
 				if ok {
-					fmt.Println(msg)
 					response = ""
 
 					v, ok := msg["status"].([]string)
@@ -101,11 +96,9 @@ func send(code string) string {
 func main() {
 	input := "(+ 40 2)"
 
-	// if len(os.Args) > 1 {
-	// fmt.Println(os.Args[1])
-	// input = os.Args[1]
-	// }
+	if len(os.Args) > 1 {
+		input = os.Args[1]
+	}
 
-	// send("(def variable \"like this\")")
 	fmt.Println(send(input))
 }
