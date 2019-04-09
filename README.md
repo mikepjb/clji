@@ -34,3 +34,7 @@ returns out key and value key
   - out: println
   - value: return value
   e.g (println 42), out: "42\n", value: nil
+
+## Reference
+
+https://andrewvos.com/writing-async-jobs-in-vim-8/
