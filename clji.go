@@ -46,7 +46,6 @@ func main() {
 	for {
 		r.Read(b)
 		response += string(b)
-		fmt.Println(response)
 		msg, ok := bencode.Decode(response)
 
 		if ok {

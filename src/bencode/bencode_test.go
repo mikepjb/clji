@@ -34,10 +34,23 @@ func TestDecode(t *testing.T) {
 // because we are reading bencoded info in a stream we'd like to know if we have
 // a complete data structure.
 func TestFlagIncompleteBencode(t *testing.T) {
+	// open dictionary only
+	_, ok := bencode.Decode("d")
+
+	if ok {
+		t.Errorf("open dictionary is not a complete bencode message")
+	}
+
+	// missing dictionary close with complete keypair
+	_, ok = bencode.Decode("d11:new-session")
+	if ok {
+		t.Errorf("got ok for missing dictionary close with complete keypair")
+	}
+
 	// with complete value
 	partialWithCompleteValue := "d11:new-session36:7db0cecd-6f2a-4b57-a29b-c01c18eb7c897"
 
-	_, ok := bencode.Decode(partialWithCompleteValue)
+	_, ok = bencode.Decode(partialWithCompleteValue)
 
 	if ok {
 		t.Errorf("message should not be complete for partialWithCompleteValue")
