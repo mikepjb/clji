@@ -10,7 +10,7 @@ import (
 	"github.com/mikepjb/clji/src/bencode"
 )
 
-func main() {
+func send(code string) {
 	port := "9999"
 
 	fileb, err := ioutil.ReadFile(".nrepl-port")
@@ -56,15 +56,11 @@ func main() {
 				"session": msg["new-session"].(string),
 				"op":      "eval",
 				"ns":      "user",
-				"code":    "(def a 13)",
+				"code":    code,
 			}
 
-			fmt.Println(defMsg)
 			emsg := bencode.Encode(defMsg)
-			fmt.Println(emsg)
-
 			fmt.Fprintf(conn, emsg)
-			// r = bufio.NewReader(conn)
 
 			for {
 				r.Read(b)
@@ -73,8 +69,6 @@ func main() {
 				msg, ok = bencode.Decode(response)
 
 				if ok {
-					fmt.Println("re:", response)
-					fmt.Println("ok:", msg)
 					break
 				}
 			}
@@ -82,4 +76,9 @@ func main() {
 			break
 		}
 	}
+}
+
+func main() {
+	// send("(def variable \"like this\")")
+	send("(+ 40 2)")
 }
