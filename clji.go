@@ -49,7 +49,38 @@ func main() {
 		msg, ok := bencode.Decode(response)
 
 		if ok {
+			response := ""
 			fmt.Println(msg)
+			fmt.Println(msg["new-session"])
+
+			defMsg := map[string]string{
+				"session": msg["new-session"].(string),
+				"ns":      "user",
+				"eval":    "(def a 13)",
+			}
+
+			emsg := bencode.Encode(defMsg)
+
+			fmt.Fprintf(conn, emsg+"\n")
+
+			for {
+				r.Read(b)
+				response += string(b)
+
+				if len(response) > 50 {
+					break
+				}
+
+				fmt.Println(string(b))
+				fmt.Println(response)
+				_, _ = bencode.Decode(response)
+
+				// if ok {
+				// 	fmt.Println(msg)
+				// 	break
+				// }
+			}
+
 			break
 		}
 	}
