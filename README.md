@@ -4,6 +4,19 @@ A tool used to send code between vim and a running nREPL.
 
 Test with `lein repl :start :port 9999` (I have no idea where `.nrepl-port` went..)
 
+## Use in Vim
+
+```
+func! Require()
+  " echo('clji "(load-file \"' . expand('%') . '\")"')
+  let call = system('clji "(load-file \"' . expand('%') . '\")"')
+  " let call = system("clji \"(require 'blue.strategic.billing.backing-sheets :reload)\"")
+  echo call
+endfunc
+
+command! Require :call Require()
+```
+
 ## Notes on nREPL
 
 if no project.clj is found, it creates a ~/.lein/nrepl-port file
